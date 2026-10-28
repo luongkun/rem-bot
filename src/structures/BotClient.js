@@ -34,8 +34,15 @@ module.exports = class BotClient extends Client {
       allowedMentions: {
         repliedUser: false,
       },
-      restRequestTimeout: 20000,
+      rest: {
+        timeout: 15000,
+        retries: 1,
+      },
     });
+
+    this.rest.on("rateLimited", (info) =>
+      Logger.warn(`REST rate limited: ${info?.route} retryAfter ${info?.retryAfter}ms global=${info?.global}`)
+    );
 
     this.wait = require("util").promisify(setTimeout); // await client.wait(1000) - Wait 1 second
     this.config = require("@root/config"); // load the config file

@@ -42,6 +42,6 @@ module.exports = {
             "Place the bot role above Member and Unverified. Grant only the permissions required for enabled features; Administrator is not required.",
         }
       );
-    await interaction.followUp({ embeds: [embed], allowedMentions: { parse: [] } });
+    await interaction.editReply({ embeds: [embed], allowedMentions: { parse: [] } });
   },
 };
