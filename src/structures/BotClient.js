@@ -35,11 +35,12 @@ module.exports = class BotClient extends Client {
         repliedUser: false,
       },
       rest: {
-        timeout: 15000,
-        retries: 1,
+        timeout: 8000,
+        retries: 0,
       },
     });
 
+    Logger.log(`REST options: timeout ${this.rest.options.timeout}ms, retries ${this.rest.options.retries}`);
     this.rest.on("rateLimited", (info) =>
       Logger.warn(`REST rate limited: ${info?.route} retryAfter ${info?.retryAfter}ms global=${info?.global}`)
     );
