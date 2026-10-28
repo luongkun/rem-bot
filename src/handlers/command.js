@@ -134,13 +134,22 @@ module.exports = {
       }
     }
 
+    const receivedAt = Date.now();
+    interaction.client.logger.log(`slash /${cmd.name} received from ${interaction.user.id}`);
+
     try {
       await interaction.deferReply({ ephemeral: cmd.slashCommand.ephemeral });
+      const acknowledgedIn = Date.now() - receivedAt;
+      const settingsStartedAt = Date.now();
       const settings = await getSettings(interaction.guild);
+      const settingsIn = Date.now() - settingsStartedAt;
       await cmd.interactionRun(interaction, { settings });
+      interaction.client.logger.log(
+        `slash /${cmd.name}: acknowledged in ${acknowledgedIn}ms, settings in ${settingsIn}ms, finished in ${Date.now() - receivedAt}ms`
+      );
     } catch (ex) {
-      await interaction.followUp("Oops! An error occurred while running the command");
-      interaction.client.logger.error("interactionRun", ex);
+      interaction.client.logger.error(`interactionRun /${cmd.name} after ${Date.now() - receivedAt}ms`, ex);
+      await interaction.followUp("Oops! An error occurred while running the command").catch(() => {});
     } finally {
       if (cmd.cooldown > 0) applyCooldown(interaction.user.id, cmd);
     }
